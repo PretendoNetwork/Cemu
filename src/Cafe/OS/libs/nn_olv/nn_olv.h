@@ -12,7 +12,6 @@ namespace nn
 {
 	namespace olv
 	{
-
 		extern ParamPackStorage g_ParamPack;
 		extern DiscoveryResultStorage g_DiscoveryResults;
 

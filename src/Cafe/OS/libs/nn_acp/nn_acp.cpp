@@ -456,6 +456,21 @@ namespace acp
 		osLib_returnFromFunction(hCPU, acpRequest->returnCode);
 	}
 
+	void export_ACPGetTitleMetaXml(PPCInterpreter_t* hCPU)
+	{
+		ppcDefineParamU64(titleId, 0);
+		ppcDefineParamStructPtr(acpMetaXml, acpMetaXml_t, 2);
+
+		acpPrepareRequest();
+		acpRequest->requestCode = IOSU_ACP_GET_TITLE_META_XML;
+		acpRequest->ptr = acpMetaXml;
+		acpRequest->titleId = titleId;//CafeSystem::GetForegroundTitleId();
+
+		__depr__IOS_Ioctlv(IOS_DEVICE_ACP_MAIN, IOSU_ACP_REQUEST_CEMU, 1, 1, acpBufferVector);
+
+		osLib_returnFromFunction(hCPU, acpRequest->returnCode);
+	}
+
 	void export_ACPIsOverAgeEx(PPCInterpreter_t* hCPU)
 	{
 		ppcDefineParamU32(age, 0);
@@ -508,6 +523,7 @@ namespace acp
 
 		osLib_addFunction("nn_acp", "ACPGetTitleMetaDirByDevice", export_ACPGetTitleMetaDirByDevice);
 		osLib_addFunction("nn_acp", "ACPGetTitleMetaXmlByDevice", export_ACPGetTitleMetaXmlByDevice);
+		osLib_addFunction("nn_acp", "ACPGetTitleMetaXml", export_ACPGetTitleMetaXml);
 
 		cafeExportRegister("nn_acp", ACPGetApplicationBox, LogType::Placeholder);
 

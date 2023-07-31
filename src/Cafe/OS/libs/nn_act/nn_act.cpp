@@ -228,6 +228,19 @@ uint32 GetCountryEx(char* country, uint8 slot)
 	return result;
 }
 
+uint32 GetTimeZoneIdEx(char* timeZoneId, uint8 slot)
+{
+	actPrepareRequest2();
+	actRequest->requestCode = IOSU_ARC_TIMEZONEID;
+	actRequest->accountSlot = slot;
+
+	uint32 result = _doCemuActRequest(actRequest);
+
+	strcpy(timeZoneId, actRequest->resultString.strBuffer);
+
+	return result;
+}
+
 uint32 IsNetworkAccount(uint8* isNetworkAccount, uint8 slot)
 {
 	actPrepareRequest2();
@@ -335,6 +348,14 @@ void nnActExport_GetCountry(PPCInterpreter_t* hCPU)
 	cemuLog_logDebug(LogType::Force, "nn_act.GetCountry(0x{:08x})", hCPU->gpr[3]);
 	ppcDefineParamStr(country, 0);
 	uint32 r = GetCountryEx(country, iosu::act::ACT_SLOT_CURRENT);
+	osLib_returnFromFunction(hCPU, r);
+}
+
+void nnActExport_GetTimeZoneId(PPCInterpreter_t* hCPU)
+{
+	cemuLog_logDebug(LogType::Force, "nn_act.GetTimeZoneId(0x{:08x})", hCPU->gpr[3]);
+	ppcDefineParamStr(timeZoneId, 0);
+	uint32 r = GetTimeZoneIdEx(timeZoneId, iosu::act::ACT_SLOT_CURRENT);
 	osLib_returnFromFunction(hCPU, r);
 }
 
@@ -694,6 +715,7 @@ void nnAct_load()
 	osLib_addFunction("nn_act", "GetPersistentIdEx__Q2_2nn3actFUc", nnActExport_GetPersistentIdEx);
 	// country
 	osLib_addFunction("nn_act", "GetCountry__Q2_2nn3actFPc", nnActExport_GetCountry);
+	osLib_addFunction("nn_act", "GetTimeZoneId__Q2_2nn3actFPc", nnActExport_GetTimeZoneId);
 
 	// parental
 	osLib_addFunction("nn_act", "EnableParentalControlCheck__Q2_2nn3actFb", nnActExport_EnableParentalControlCheck);
